@@ -1,0 +1,20 @@
+# editor temp files
+*~
+.*.sw?
+.sw?
+.\#*
+\#*\#
+DEADJOE
+# compiled files
+_vendor/
+*\.test
+
+# various output files
+*.out
+cover-cobertura.xml
+cover.json
+report.xml
+
+
+# main app files
+main
