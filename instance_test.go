@@ -12,7 +12,7 @@ func TestInstance(t *testing.T) {
 		User: "USERID",
 		Password: "PASSW0RD",
 	}
-	str, err := i.Cmd([]string{"chassis","status"})
+	str, err := i.GetChassisStatus()
 	Convey("", t, func() {
 		So(err, ShouldEqual, nil)
 		So(str, ShouldEqual, nil)

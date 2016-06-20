@@ -3,6 +3,7 @@ package ipmitool
 import (
 	"os/exec"
 	"fmt"
+	"strings"
 )
 
 
@@ -14,7 +15,7 @@ type Instance struct {
 }
 
 
-func (i Instance) Cmd(cmdArgs []string) (string, error) {
+func (i Instance) Cmd(cmdArgs []string) ([]string, error) {
 	var args []string
 	var env []string
 	// auth
@@ -31,12 +32,5 @@ func (i Instance) Cmd(cmdArgs []string) (string, error) {
 	cmd := exec.Command("ipmitool",args...)
 	cmd.Env = env
 	out, err := cmd.CombinedOutput()
-	_ = err
-	return string(out), err
+	return strings.Split(string(out), "\n"), err
 }
-
-
-
-
-//func (i *Instance) ChassisStatus (
-//)
