@@ -7,9 +7,9 @@ import (
 
 func TestInstance(t *testing.T) {
 	i := Instance{
-		IP: "172.16.121.12",
+		IP:       "172.16.121.12",
 		AuthType: "MD5",
-		User: "USERID",
+		User:     "USERID",
 		Password: "PASSW0RD",
 	}
 	str, err := i.GetChassisStatus()

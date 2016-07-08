@@ -1,8 +1,9 @@
 package ipmitool
+
 import (
-	"regexp"
 	"errors"
 	"fmt"
+	"regexp"
 )
 
 // Example output of chassis status:
@@ -19,26 +20,26 @@ import (
 // Cooling/Fan Fault    : false
 
 type ChassisStatus struct {
-	Power bool
-	PowerRestorePolicy string
-	LastPowerEvent string
-	DriveFault  bool
-	CoolingFault bool
-
+	Power              bool   `json:"power"`
+	PowerRestorePolicy string `json:"power_restore_policy"`
+	LastPowerEvent     string `json:"last_power_event"`
+	DriveFault         bool   `json:"drive_fault"`
+	CoolingFault       bool   `json:"cooling_fault"`
 }
 
-
-func (i Instance) GetChassisStatus() (ChassisStatus,error)  {
+func (i Instance) GetChassisStatus() (ChassisStatus, error) {
 	var st ChassisStatus
-	out,err := i.Cmd([]string{"chassis","status"})
+	out, err := i.Cmd([]string{"chassis", "status"})
 	splitRe := regexp.MustCompile(`(.*\S)\s+?:\s+(\S.*)`)
-	if (err != nil) {
-		return st,err
+	if err != nil {
+		return st, err
 	}
-	for _,line := range out {
+	for _, line := range out {
 		m := splitRe.FindStringSubmatch(line)
-		if len(m) < 3 { continue }
-		switch{
+		if len(m) < 3 {
+			continue
+		}
+		switch {
 		case m[1] == "System Power":
 			if m[2] == "on" {
 				st.Power = true
