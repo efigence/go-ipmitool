@@ -20,6 +20,8 @@ import (
 // Cooling/Fan Fault    : false
 
 type ChassisStatus struct {
+	// meta-status that says if last connection to server was successful
+	Connected          bool   `json:"connected"`
 	Power              bool   `json:"power"`
 	PowerRestorePolicy string `json:"power_restore_policy"`
 	LastPowerEvent     string `json:"last_power_event"`
@@ -48,6 +50,7 @@ func (i Instance) GetChassisStatus() (ChassisStatus, error) {
 			} else {
 				return st, errors.New(fmt.Sprintf("Unknown system power state: [%s]"))
 			}
+			st.Connected = true
 		case m[1] == "Power Restore Policy":
 			st.PowerRestorePolicy = m[2]
 		case m[1] == "Last Power Event":
