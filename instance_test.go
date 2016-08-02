@@ -15,6 +15,6 @@ func TestInstance(t *testing.T) {
 	str, err := i.GetChassisStatus()
 	Convey("", t, func() {
 		So(err, ShouldEqual, nil)
-		So(str, ShouldEqual, nil)
+		So(str, ShouldNotEqual, nil)
 	})
 }

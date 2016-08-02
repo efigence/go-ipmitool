@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
 )
 
 // Example output of chassis status:
@@ -27,6 +28,7 @@ type ChassisStatus struct {
 	LastPowerEvent     string `json:"last_power_event"`
 	DriveFault         bool   `json:"drive_fault"`
 	CoolingFault       bool   `json:"cooling_fault"`
+	Identify           bool   `json:"identify"`
 }
 
 func (i Instance) GetChassisStatus() (ChassisStatus, error) {
@@ -66,4 +68,50 @@ func (i Instance) GetChassisStatus() (ChassisStatus, error) {
 		}
 	}
 	return st, err
+}
+
+func (i Instance) Identify(state bool) (err error) {
+	var idState string
+	if state {
+		idState = "force"
+	} else {
+		idState = "0"
+	}
+	out, err := i.Cmd([]string{"chassis", "identify", idState})
+	if len(out) > 0 {
+		re := regexp.MustCompile("Chassis identify interval")
+		if !re.MatchString(out[0]) {
+			return fmt.Errorf("Error: %s,%+v", err, out)
+		}
+		i.identify = true
+	} else {
+		return fmt.Errorf("Error: %s,%+v", err, out)
+	}
+	return err
+}
+
+//Chassis Power Control: Cycle
+
+func (i Instance) PowerOff() (err error) {
+	out, err := i.Cmd([]string{"chassis", "power", "off"})
+	if !strings.Contains(out[0], "Chassis Power Control") || !strings.Contains(out[0], "Off") {
+		return fmt.Errorf("unexpected ipmitool output: %+v", out)
+	}
+	return err
+}
+
+func (i Instance) PowerOn() (err error) {
+	out, err := i.Cmd([]string{"chassis", "power", "on"})
+	if !strings.Contains(out[0], "Chassis Power Control") || !strings.Contains(out[0], "On") {
+		return fmt.Errorf("unexpected ipmitool output: %+v", out)
+	}
+	return err
+}
+
+func (i Instance) PowerCycle() (err error) {
+	out, err := i.Cmd([]string{"chassis", "power", "cycle"})
+	if !strings.Contains(out[0], "Chassis Power Control") || !strings.Contains(out[0], "Cycle") {
+		return fmt.Errorf("unexpected ipmitool output: %+v", out)
+	}
+	return err
 }

@@ -11,6 +11,7 @@ type Instance struct {
 	AuthType string
 	User     string
 	Password string
+	identify bool
 }
 
 func (i Instance) Cmd(cmdArgs []string) ([]string, error) {
