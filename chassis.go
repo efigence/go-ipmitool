@@ -110,6 +110,9 @@ func (i Instance) PowerOn() (err error) {
 
 func (i Instance) PowerCycle() (err error) {
 	out, err := i.Cmd([]string{"chassis", "power", "cycle"})
+	if strings.Contains(out[0], "Command not supported in present state") {
+		return fmt.Errorf("Power Cycle command only works on powered on machine(ipmi quirk)")
+	}
 	if !strings.Contains(out[0], "Chassis Power Control") || !strings.Contains(out[0], "Cycle") || err != nil {
 		return fmt.Errorf("unexpected ipmitool output: %+v\nerr: %s", out, err)
 	}
