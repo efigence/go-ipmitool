@@ -95,7 +95,7 @@ func (i Instance) Identify(state bool) (err error) {
 func (i Instance) PowerOff() (err error) {
 	out, err := i.Cmd([]string{"chassis", "power", "off"})
 	if !strings.Contains(out[0], "Chassis Power Control") || !strings.Contains(out[0], "Off") {
-		return fmt.Errorf("unexpected ipmitool output: %+v", out)
+		return fmt.Errorf("unexpected ipmitool output: %+v\nerr: %s", out, err)
 	}
 	return err
 }
@@ -103,15 +103,15 @@ func (i Instance) PowerOff() (err error) {
 func (i Instance) PowerOn() (err error) {
 	out, err := i.Cmd([]string{"chassis", "power", "on"})
 	if !strings.Contains(out[0], "Chassis Power Control") || !strings.Contains(out[0], "On") {
-		return fmt.Errorf("unexpected ipmitool output: %+v", out)
+		return fmt.Errorf("unexpected ipmitool output: %+v\nerr: %s", out, err)
 	}
 	return err
 }
 
 func (i Instance) PowerCycle() (err error) {
 	out, err := i.Cmd([]string{"chassis", "power", "cycle"})
-	if !strings.Contains(out[0], "Chassis Power Control") || !strings.Contains(out[0], "Cycle") {
-		return fmt.Errorf("unexpected ipmitool output: %+v", out)
+	if !strings.Contains(out[0], "Chassis Power Control") || !strings.Contains(out[0], "Cycle") || err != nil {
+		return fmt.Errorf("unexpected ipmitool output: %+v\nerr: %s", out, err)
 	}
 	return err
 }
